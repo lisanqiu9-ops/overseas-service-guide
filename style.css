@@ -746,9 +746,7 @@ button {
   }
 
   .toc {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 2px;
+    display: none;
   }
 
   .toc a,
