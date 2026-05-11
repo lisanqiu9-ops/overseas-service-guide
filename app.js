@@ -19,14 +19,18 @@ const riskNames = {
 
 const state = {
   query: "",
-  filter: "all"
+  filter: "all",
+  view: "grid"
 };
+
+let tocObserver = null;
 
 const homeView = document.querySelector("#home-view");
 const detailView = document.querySelector("#detail-view");
 const cardGrid = document.querySelector("#card-grid");
 const searchInput = document.querySelector("#search-input");
 const resultCount = document.querySelector("#result-count");
+const viewButtons = document.querySelectorAll(".view-button");
 
 function isMatchFilter(article) {
   if (state.filter === "all") return true;
@@ -85,6 +89,8 @@ window.handleImageError = function handleImageError(img) {
 function renderHome() {
   const filtered = getFilteredArticles();
   resultCount.textContent = `${filtered.length} 篇`;
+  cardGrid.classList.toggle("card-grid", state.view === "grid");
+  cardGrid.classList.toggle("guide-list", state.view === "list");
 
   if (!filtered.length) {
     cardGrid.innerHTML = `<div class="empty-state">没有找到匹配教程。</div>`;
@@ -99,6 +105,7 @@ function renderHome() {
       <div class="card-body">
         <div class="meta-row">
           <span class="badge ${article.status}">${statusNames[article.status] || article.status}</span>
+          <span class="badge category-badge">${article.category}</span>
           <span class="badge">${article.difficulty}</span>
           <span class="badge risk-${article.riskLevel}">${riskNames[article.riskLevel] || article.riskLevel}</span>
         </div>
@@ -170,55 +177,129 @@ function renderFollowUps(followUps) {
   `;
 }
 
+function renderLinks(links) {
+  if (!links?.length) return "";
+  return `
+    <section class="links-section">
+      <h2>相关链接</h2>
+      <ul>
+        ${links.map((link) => `
+          <li>
+            <strong>${link.title}：</strong>
+            <a href="${link.url}" target="_blank" rel="noopener noreferrer">点击跳转</a>
+          </li>
+        `).join("")}
+      </ul>
+    </section>
+  `;
+}
+
+function cleanupTocObserver() {
+  if (tocObserver) {
+    tocObserver.disconnect();
+    tocObserver = null;
+  }
+}
+
+function setActiveStep(stepId) {
+  detailView.querySelectorAll(".toc-link").forEach((button) => {
+    button.classList.toggle("active", button.dataset.stepId === stepId);
+  });
+}
+
+function setupTocObserver() {
+  cleanupTocObserver();
+
+  const scroller = detailView.querySelector(".article-scroll");
+  const steps = Array.from(detailView.querySelectorAll(".step-card[id]"));
+  if (!steps.length) return;
+
+  setActiveStep(steps[0].id);
+
+  tocObserver = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+    if (visible[0]) setActiveStep(visible[0].target.id);
+  }, {
+    root: scroller || null,
+    rootMargin: "-18% 0px -58% 0px",
+    threshold: [0.12, 0.25, 0.5, 0.75]
+  });
+
+  steps.forEach((step) => tocObserver.observe(step));
+}
+
 function renderDetail(article) {
+  detailView.classList.toggle("has-floating-toc", Boolean(article.steps?.length));
   detailView.innerHTML = `
-    <a class="back-button" href="#/">返回首页</a>
+    <aside class="reader-rail">
+      <a class="back-button" href="#/">返回首页</a>
+      <div class="reader-current">
+        <span>当前教程</span>
+        <strong>${article.title}</strong>
+        <small>${article.category} · ${article.updatedAt}</small>
+      </div>
+    </aside>
+    ${article.steps?.length ? `
+      <nav class="floating-toc" aria-label="步骤导航">
+        <strong>步骤导航</strong>
+        ${article.steps.map((step) => `<button type="button" class="toc-link" data-step-id="${step.id}">${step.number} ${step.title}</button>`).join("")}
+      </nav>
+    ` : ""}
     <div class="article-shell">
-      <header class="tutorial-hero">
-        <div class="tutorial-intro">
-          <div class="meta-row">
-            <span class="badge ${article.status}">${statusNames[article.status] || article.status}</span>
-            <span class="badge">${article.category}</span>
-            <span class="badge">${article.difficulty}</span>
-            <span class="badge risk-${article.riskLevel}">${riskNames[article.riskLevel] || article.riskLevel}</span>
+      <div class="reading-titlebar">
+        <span>正在阅读</span>
+        <strong>${article.title}</strong>
+      </div>
+      <div class="article-scroll">
+        <header class="tutorial-hero">
+          <div class="tutorial-intro">
+            <div class="meta-row">
+              <span class="badge ${article.status}">${statusNames[article.status] || article.status}</span>
+              <span class="badge">${article.category}</span>
+              <span class="badge">${article.difficulty}</span>
+              <span class="badge risk-${article.riskLevel}">${riskNames[article.riskLevel] || article.riskLevel}</span>
+            </div>
+            <h1>${article.title}</h1>
+            <p>${article.description}</p>
+            <div class="info-grid">
+              <div class="info-item"><span>更新时间</span><b>${article.updatedAt}</b></div>
+              <div class="info-item"><span>预计耗时</span><b>${article.duration || "-"}</b></div>
+              <div class="info-item"><span>步骤数量</span><b>${article.steps?.length || 0} 步</b></div>
+            </div>
           </div>
-          <h1>${article.title}</h1>
-          <p>${article.description}</p>
-          <div class="info-grid">
-            <div class="info-item"><span>更新时间</span><b>${article.updatedAt}</b></div>
-            <div class="info-item"><span>预计耗时</span><b>${article.duration || "-"}</b></div>
-            <div class="info-item"><span>步骤数量</span><b>${article.steps?.length || 0} 步</b></div>
-          </div>
+        </header>
+
+        <div class="article-content">
+          ${article.targetUsers?.length ? `
+            <section class="plain-section">
+              <h2>适用人群</h2>
+              <ul>${article.targetUsers.map((user) => `<li>${user}</li>`).join("")}</ul>
+            </section>
+          ` : ""}
+
+          ${article.notices?.length ? `
+            <section class="notice-stack">
+              ${article.notices.map(renderNotice).join("")}
+            </section>
+          ` : ""}
+
+          ${renderLinks(article.links)}
+
+          ${article.steps?.length ? `
+            <section class="steps-section">
+              ${article.steps.map(renderStep).join("")}
+            </section>
+          ` : `<div class="empty-state">这篇教程还在整理中。</div>`}
+
+          ${renderFollowUps(article.followUps)}
         </div>
-      </header>
-
-      <div class="article-content">
-        ${article.targetUsers?.length ? `
-          <section class="plain-section">
-            <h2>适用人群</h2>
-            <ul>${article.targetUsers.map((user) => `<li>${user}</li>`).join("")}</ul>
-          </section>
-        ` : ""}
-
-        ${article.notices?.length ? `
-          <section class="notice-stack">
-            ${article.notices.map(renderNotice).join("")}
-          </section>
-        ` : ""}
-
-        ${article.steps?.length ? `
-          <nav class="toc">
-            ${article.steps.map((step) => `<button type="button" class="toc-link" data-step-id="${step.id}">${step.number} ${step.title}</button>`).join("")}
-          </nav>
-          <section class="steps-section">
-            ${article.steps.map(renderStep).join("")}
-          </section>
-        ` : `<div class="empty-state">这篇教程还在整理中。</div>`}
-
-        ${renderFollowUps(article.followUps)}
       </div>
     </div>
   `;
+  setupTocObserver();
 }
 
 function route() {
@@ -228,6 +309,7 @@ function route() {
   if (match) {
     const article = articles.find((item) => item.id === match[1]);
     if (article) {
+      document.body.classList.add("article-open");
       homeView.hidden = true;
       detailView.hidden = false;
       renderDetail(article);
@@ -236,8 +318,11 @@ function route() {
     }
   }
 
+  document.body.classList.remove("article-open");
   homeView.hidden = false;
   detailView.hidden = true;
+  detailView.classList.remove("has-floating-toc");
+  cleanupTocObserver();
   renderHome();
   window.scrollTo(0, 0);
 }
@@ -256,12 +341,22 @@ searchInput.addEventListener("input", (event) => {
   renderHome();
 });
 
+viewButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    viewButtons.forEach((item) => item.classList.remove("active"));
+    button.classList.add("active");
+    state.view = button.dataset.view;
+    renderHome();
+  });
+});
+
 detailView.addEventListener("click", (event) => {
   const button = event.target.closest("[data-step-id]");
   if (!button) return;
 
   const target = detailView.querySelector(`#${button.dataset.stepId}`);
   if (target) {
+    setActiveStep(button.dataset.stepId);
     target.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 });

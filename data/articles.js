@@ -3,8 +3,8 @@ window.GUIDE_ARTICLES = [
     id: "gmail-app-google-account-register-mainland",
     title: "大陆用户如何通过 Gmail App 注册 Google 账号",
     description: "通过 Gmail 移动应用进入 Google 账号创建流程，适合新手按截图一步一步操作。相比直接在浏览器里找入口，这种方式路径更固定，更适合新手。",
-    cover: "assets/tutorial-images/google/cover.png",
-    coverFallback: "assets/placeholder.svg",
+    cover: "assets/tutorial-images/google/封面.jpg",
+    coverFallback: "assets/tutorial-images/google/步骤01.jpg",
     category: "Google 账号",
     group: "account",
     status: "available",
@@ -190,6 +190,24 @@ window.GUIDE_ARTICLES = [
       { type: "warning", text: "注册或改区前请关闭所有代理、加速器、科学上网软件，使用国内真实网络环境。异常网络很容易触发“无法创建此账户”等苹果风控。" },
       { type: "note", text: "填写美国账单地址时，优先选择免税州，例如 Oregon（俄勒冈州），可以减少后续购买或兑换礼品卡时遇到的税费问题。" },
       { type: "info", text: "本教程只用于正常注册、地区切换和 App Store 使用说明。请遵守 Apple 服务条款、应用商店规则和所在地法律法规。" }
+    ],
+    links: [
+      {
+        title: "App Store 官网文档",
+        url: "https://developer.apple.com/cn/help/app-store-connect/manage-your-apps-availability/manage-availability-for-your-app-on-the-app-store/"
+      },
+      {
+        title: "iCloud 官网地址",
+        url: "https://www.icloud.com/"
+      },
+      {
+        title: "Apple 官网地址",
+        url: "https://account.apple.com/"
+      },
+      {
+        title: "美国地址生成器",
+        url: "https://www.meiguodizhi.com/"
+      }
     ],
     steps: [
       {

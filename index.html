@@ -33,10 +33,16 @@
 
       <div class="section-title">
         <h1>全部教程</h1>
-        <span id="result-count">0 篇</span>
+        <div class="title-tools">
+          <span id="result-count">0 篇</span>
+          <div class="view-switch" aria-label="展示方式">
+            <button class="view-button active" type="button" data-view="grid">卡片</button>
+            <button class="view-button" type="button" data-view="list">列表</button>
+          </div>
+        </div>
       </div>
 
-      <section id="card-grid" class="card-grid"></section>
+      <section id="card-grid" class="guide-results card-grid"></section>
     </section>
 
     <article id="detail-view" class="detail-view" hidden></article>

@@ -26,6 +26,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  padding-top: 72px;
   color: var(--ink);
   font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
   background:
@@ -46,8 +47,10 @@ button {
 }
 
 .topbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 20;
   height: 72px;
   display: flex;
@@ -156,6 +159,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   margin-bottom: 14px;
 }
 
@@ -168,10 +172,47 @@ button {
   color: var(--muted);
 }
 
+.title-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.view-switch {
+  display: inline-flex;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: rgba(255, 255, 255, .78);
+}
+
+.view-button {
+  height: 30px;
+  min-width: 54px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 99px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.view-button.active,
+.view-button:hover {
+  color: #fff;
+  background: var(--blue);
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 18px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.guide-results {
   min-width: 0;
   max-width: 100%;
 }
@@ -196,6 +237,54 @@ button {
   transform: translateY(-3px);
   border-color: rgba(47, 99, 244, .52);
   box-shadow: 0 20px 42px rgba(47, 99, 244, .14);
+}
+
+.guide-list {
+  display: grid;
+  gap: 12px;
+}
+
+.guide-list .guide-card {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  border-radius: 18px;
+}
+
+.guide-list .guide-card:hover {
+  transform: translateY(-1px);
+}
+
+.guide-list .card-cover {
+  width: 168px;
+  height: 100%;
+  min-height: 138px;
+}
+
+.guide-list .card-body {
+  min-width: 0;
+  padding: 18px 20px;
+}
+
+.guide-list .guide-card h2 {
+  margin: 12px 0 8px;
+  font-size: 21px;
+  line-height: 1.35;
+}
+
+.guide-list .guide-card p {
+  max-width: 820px;
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted);
+  line-height: 1.75;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.guide-list .card-foot {
+  padding-top: 14px;
 }
 
 .card-cover {
@@ -262,6 +351,14 @@ button {
   background: #ffe5e5;
 }
 
+.category-badge {
+  display: none;
+}
+
+.guide-list .category-badge {
+  display: inline-flex;
+}
+
 .guide-card h2 {
   margin: 14px 0 9px;
   font-size: 21px;
@@ -311,6 +408,47 @@ button {
   min-width: 0;
 }
 
+.detail-view.has-floating-toc {
+  width: min(100%, 1500px);
+  display: grid;
+  grid-template-columns: minmax(150px, 180px) minmax(0, 1040px) minmax(220px, 260px);
+  gap: 22px;
+  align-items: start;
+}
+
+.reader-rail {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.detail-view.has-floating-toc .reader-rail {
+  grid-column: 1;
+  align-self: start;
+}
+
+.reader-current {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .86);
+  box-shadow: 0 12px 34px rgba(26, 47, 91, .07);
+}
+
+.reader-current span,
+.reader-current small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.reader-current strong {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
 .back-button {
   height: 40px;
   display: inline-flex;
@@ -325,6 +463,10 @@ button {
   box-shadow: 0 10px 24px rgba(26, 47, 91, .07);
 }
 
+.detail-view.has-floating-toc .back-button {
+  justify-self: start;
+}
+
 .article-shell {
   margin-top: 18px;
   overflow: hidden;
@@ -335,6 +477,19 @@ button {
   border-radius: 28px;
   background: var(--surface);
   box-shadow: var(--shadow);
+}
+
+.detail-view.has-floating-toc .article-shell {
+  grid-column: 2;
+  margin-top: 0;
+}
+
+.reading-titlebar {
+  display: none;
+}
+
+.article-scroll {
+  min-width: 0;
 }
 
 .tutorial-hero {
@@ -455,6 +610,45 @@ button {
   line-height: 1.9;
 }
 
+.links-section {
+  margin: 24px 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.links-section h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+
+.links-section ul {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 22px;
+  line-height: 1.8;
+}
+
+.links-section li::marker {
+  color: var(--blue);
+}
+
+.links-section strong {
+  font-weight: 900;
+}
+
+.links-section a {
+  color: var(--blue);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(47, 99, 244, .5);
+}
+
+.links-section a:hover {
+  border-bottom-style: solid;
+}
+
 .toc {
   display: flex;
   flex-wrap: wrap;
@@ -462,9 +656,35 @@ button {
   margin: 28px 0;
 }
 
+.floating-toc {
+  position: sticky;
+  top: 96px;
+  grid-column: 3;
+  grid-row: 1;
+  z-index: 10;
+  width: 100%;
+  max-height: calc(100vh - 120px);
+  display: grid;
+  gap: 8px;
+  margin-top: 0;
+  padding: 14px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 18px 46px rgba(26, 47, 91, .12);
+  backdrop-filter: blur(16px);
+}
+
+.floating-toc strong {
+  padding: 2px 4px 6px;
+  color: var(--ink);
+  font-size: 13px;
+}
+
 .toc a,
 .toc-link {
-  height: 32px;
+  min-height: 32px;
   display: inline-flex;
   align-items: center;
   padding: 0 12px;
@@ -475,10 +695,24 @@ button {
   background: var(--surface-soft);
   font-size: 13px;
   font-weight: 800;
+  text-align: left;
+}
+
+.floating-toc .toc-link {
+  width: 100%;
+  justify-content: flex-start;
+  line-height: 1.35;
+  padding: 8px 10px;
 }
 
 .toc-link:hover {
   background: #dfeaff;
+}
+
+.toc-link.active {
+  color: var(--blue-dark);
+  background: #dfeaff;
+  box-shadow: inset 4px 0 0 var(--blue);
 }
 
 .steps-section {
@@ -654,7 +888,75 @@ button {
   line-height: 1.6;
 }
 
+@media (min-width: 901px) {
+  body.article-open {
+    overflow: hidden;
+  }
+
+  body.article-open .page {
+    height: calc(100vh - 72px);
+    max-width: none;
+    padding: 22px 24px 0;
+    overflow: hidden;
+  }
+
+  .detail-view.has-floating-toc {
+    height: 100%;
+  }
+
+  .detail-view.has-floating-toc .article-shell {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detail-view.has-floating-toc .article-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-top: 22px;
+  }
+
+  .detail-view.has-floating-toc .reading-titlebar {
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, .94);
+    backdrop-filter: blur(14px);
+  }
+
+  .reading-titlebar span {
+    flex: 0 0 auto;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .reading-titlebar strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .detail-view.has-floating-toc .floating-toc,
+  .detail-view.has-floating-toc .reader-rail {
+    position: sticky;
+    top: 22px;
+  }
+}
+
 @media (max-width: 900px) {
+  body {
+    padding-top: 64px;
+  }
+
   .topbar {
     height: 64px;
     justify-content: center;
@@ -702,9 +1004,48 @@ button {
     font-size: 22px;
   }
 
+  .section-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .title-tools {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .card-grid,
   .info-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guide-list .guide-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+    border-radius: 16px;
+  }
+
+  .guide-list .card-cover {
+    width: 96px;
+    min-height: 132px;
+  }
+
+  .guide-list .card-body {
+    padding: 14px;
+  }
+
+  .guide-list .guide-card h2 {
+    font-size: 17px;
+    margin: 10px 0 6px;
+  }
+
+  .guide-list .guide-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    -webkit-line-clamp: 2;
+  }
+
+  .guide-list .meta-row .badge:nth-child(2) {
+    display: none;
   }
 
   .guide-card {
@@ -729,6 +1070,15 @@ button {
     border-radius: 20px;
   }
 
+  .detail-view.has-floating-toc {
+    display: block;
+    width: min(100%, 1120px);
+  }
+
+  .reader-current {
+    display: none;
+  }
+
   .tutorial-hero {
     display: block;
   }
@@ -749,7 +1099,8 @@ button {
     word-break: break-word;
   }
 
-  .toc {
+  .toc,
+  .floating-toc {
     display: none;
   }
 
