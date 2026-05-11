@@ -234,14 +234,6 @@ function setupTocObserver() {
 function renderDetail(article) {
   detailView.classList.toggle("has-floating-toc", Boolean(article.steps?.length));
   detailView.innerHTML = `
-    <aside class="reader-rail">
-      <a class="back-button" href="#/">返回首页</a>
-      <div class="reader-current">
-        <span>当前教程</span>
-        <strong>${article.title}</strong>
-        <small>${article.category} · ${article.updatedAt}</small>
-      </div>
-    </aside>
     ${article.steps?.length ? `
       <nav class="floating-toc" aria-label="步骤导航">
         <strong>步骤导航</strong>
@@ -250,8 +242,11 @@ function renderDetail(article) {
     ` : ""}
     <div class="article-shell">
       <div class="reading-titlebar">
-        <span>正在阅读</span>
-        <strong>${article.title}</strong>
+        <div class="reading-titlecopy">
+          <span>正在阅读</span>
+          <strong>${article.title}</strong>
+        </div>
+        <a class="back-button" href="#/">返回首页</a>
       </div>
       <div class="article-scroll">
         <header class="tutorial-hero">
