@@ -498,6 +498,10 @@ button {
   box-shadow: 0 12px 34px rgba(26, 47, 91, .06);
 }
 
+.step-card.text-only {
+  grid-template-columns: 1fr;
+}
+
 .step-copy {
   min-width: 0;
 }

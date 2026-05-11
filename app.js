@@ -118,8 +118,9 @@ function renderNotice(notice) {
 }
 
 function renderStep(step) {
+  const hasImage = step.image || step.imageFallback;
   return `
-    <section class="step-card" id="${step.id}">
+    <section class="step-card ${hasImage ? "" : "text-only"}" id="${step.id}">
       <div class="step-copy">
         <div class="step-head">
           <span>${step.number}</span>
@@ -135,12 +136,14 @@ function renderStep(step) {
           </div>
         ` : ""}
       </div>
-      <figure class="step-visual">
-        <img ${imageAttrs(step.image, step.imageFallback)} alt="${step.imageAlt || step.title}">
-        <div>
-          <figcaption>${step.imageCaption || step.imageAlt || step.title}</figcaption>
-        </div>
-      </figure>
+      ${hasImage ? `
+        <figure class="step-visual">
+          <img ${imageAttrs(step.image, step.imageFallback)} alt="${step.imageAlt || step.title}">
+          <div>
+            <figcaption>${step.imageCaption || step.imageAlt || step.title}</figcaption>
+          </div>
+        </figure>
+      ` : ""}
     </section>
   `;
 }
