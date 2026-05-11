@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>海外服务使用指南</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/">
+      <span class="brand-mark">海</span>
+      <strong>海外服务使用指南</strong>
+    </a>
+  </header>
+
+  <main class="page">
+    <section id="home-view" class="home-view">
+      <section class="control-panel">
+        <label class="search-box">
+          <input id="search-input" type="search" placeholder="搜索：Google、Apple ID、GPT、手机号、验证码、订阅">
+        </label>
+
+        <div class="filter-row" aria-label="教程筛选">
+          <button class="filter-chip active" data-filter="all">全部</button>
+          <button class="filter-chip" data-filter="account">账号注册</button>
+          <button class="filter-chip" data-filter="region">地区与商店</button>
+          <button class="filter-chip" data-filter="subscription">订阅与支付</button>
+          <button class="filter-chip" data-filter="available">可用</button>
+          <button class="filter-chip" data-filter="draft">待完善</button>
+        </div>
+      </section>
+
+      <div class="section-title">
+        <h1>全部教程</h1>
+        <span id="result-count">0 篇</span>
+      </div>
+
+      <section id="card-grid" class="card-grid"></section>
+    </section>
+
+    <article id="detail-view" class="detail-view" hidden></article>
+  </main>
+
+  <script src="data/articles.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
